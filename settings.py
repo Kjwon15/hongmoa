@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 
-APPS = ['hello_world', 'helper']
+APPS = ['hello_world', 'helper', 'python']
 
-SLACK_TOKEN = None
+SLACK_TOKEN = 'xoxb-8137707063-GxNA5NerpmqnhJxD2GVFq7FU'
 
 REDIS_URL = None
