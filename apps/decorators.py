@@ -28,7 +28,7 @@ def _extract_tokens(message):
         Returns:
             (list): tokens
     '''
-    pattern = re.compile(r'["“](.+?)["”]|(\S+)', re.U | re.S)
+    pattern = re.compile(r'```(.+?)```|["“](.+?)["”]|(\S+)', re.U | re.S)
     tokens = message.split(' ', 1)
     if 1 < len(tokens):
         return filter(lambda x: x and x.strip(), pattern.split(tokens[1]))
