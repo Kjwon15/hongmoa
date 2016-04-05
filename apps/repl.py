@@ -7,9 +7,7 @@ import os
 import subprocess
 
 
-@on_command(['repl'])
-def run(robot, channel, tokens):
-    '''스크립트를 실행 후 결과 출력'''
+def run_code(tokens):
     code = tokens[0].strip()
     try:
         stdin = tokens[1]
@@ -38,3 +36,24 @@ def run(robot, channel, tokens):
     stderr = process.stderr.read()
 
     return stderr or stdout
+
+
+
+@on_command(['repl'])
+def run(robot, channel, tokens):
+    '''스크립트를 실행 후 결과 출력'''
+    return run_code(tokens)
+
+@on_command(['py2'])
+def run(robot, channel, tokens):
+    ''' Run Python2 script'''
+    code = tokens[0]
+    tokens[0] = '#!/usr/bin/env python2\n\n' + code
+    return run_code(tokens)
+
+@on_command(['py3'])
+def run(robot, channel, tokens):
+    ''' Run Python2 script'''
+    code = tokens[0]
+    tokens[0] = '#!/usr/bin/env python3\n\n' + code
+    return run_code(tokens)
