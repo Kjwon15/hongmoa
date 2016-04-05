@@ -22,6 +22,7 @@ def run(robot, channel, tokens):
 
     process = subprocess.Popen(
         [script_file.name],
+        env={},
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
     process.wait()
