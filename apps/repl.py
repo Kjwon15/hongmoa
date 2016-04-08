@@ -53,7 +53,7 @@ def run(robot, channel, tokens):
 
 @on_command(['py3'])
 def run(robot, channel, tokens):
-    ''' Run Python2 script'''
+    ''' Run Python3 script'''
     code = tokens[0]
     tokens[0] = '#!/usr/bin/env python3\n\n' + code
     return run_code(tokens)
