@@ -1,4 +1,5 @@
 from tempfile import NamedTemporaryFile
+import io
 import os
 import subprocess
 
@@ -11,7 +12,7 @@ def run_code(tokens):
 
     script_file = NamedTemporaryFile(delete=True)
 
-    with open(script_file.name, 'w') as fp:
+    with io.open(script_file.name, 'w', encoding='utf-8') as fp:
         fp.write(code)
 
     os.chmod(script_file.name, 0755)
@@ -19,12 +20,14 @@ def run_code(tokens):
 
     process = subprocess.Popen(
         [script_file.name],
-        env={},
+        env={
+            'LC_ALL': 'en_US.UTF-8',
+        },
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE)
     if stdin:
-        process.stdin.write(stdin)
+        process.stdin.write(stdin.encode('utf-8'))
         process.stdin.close()
     process.wait()
     stdout = process.stdout.read()
