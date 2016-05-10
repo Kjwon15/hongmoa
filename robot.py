@@ -5,6 +5,7 @@ patch_all()
 
 import gevent
 import logging
+from HTMLParser import HTMLParser
 from gevent.pool import Pool
 from redis import StrictRedis
 from importlib import import_module
@@ -17,6 +18,10 @@ pool = Pool(20)
 
 CMD_PREFIX = '!'
 logger = logging.getLogger()
+
+
+def unescape_html(s):
+    return HTMLParser.unescape.__func__(HTMLParser, s)
 
 
 class RedisBrain(object):
@@ -97,6 +102,7 @@ class Robot(object):
             channel = event.get('channel', '')
             user = event.get('user', '')
             text = event.get('text', '')
+            text = unescape_html(text)
             if channel and user and text:
                 messages.append((channel, user, text))
         return messages

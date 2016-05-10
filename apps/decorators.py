@@ -1,6 +1,7 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
+import cgi
 import re
 import traceback
 from functools import wraps
@@ -32,6 +33,7 @@ def on_command(commands):
                 tokens = _extract_tokens(message)
                 try:
                     channel, message = func(robot, channel, user, tokens)
+                    message = cgi.escape(message)
                     if channel:
                         robot.client.rtm_send_message(channel, message)
                         return message
