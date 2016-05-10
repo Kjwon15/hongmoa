@@ -6,17 +6,7 @@ import traceback
 from functools import wraps
 
 
-def _is_contain_command(commands, message):
-    '''check if there is a command in message
-
-        Args:
-            commands (list): list of command for the specific function
-            message (str): user gave message
-
-        Returns:
-            (bool): returns True if message contains any of commands
-    '''
-    return any((message.startswith('!'+c.strip()) for c in commands))
+TOKENIZE_PATTERN = re.compile(r'```(.+?)```|["“](.+?)["”]|(\S+)', re.U | re.S)
 
 
 def _extract_tokens(message):
@@ -28,12 +18,7 @@ def _extract_tokens(message):
         Returns:
             (list): tokens
     '''
-    pattern = re.compile(r'```(.+?)```|["“](.+?)["”]|(\S+)', re.U | re.S)
-    tokens = message.split(' ', 1)
-    if 1 < len(tokens):
-        return filter(lambda x: x and x.strip(), pattern.split(tokens[1]))
-    else:
-        return []
+    return filter(lambda x: x and x.strip(), TOKENIZE_PATTERN.split(message))
 
 
 def on_command(commands):
@@ -41,16 +26,19 @@ def on_command(commands):
         func.commands = commands
 
         @wraps(func)
-        def _decorator(args):
-            robot, channel, message = args
-            if commands and _is_contain_command(commands, message):
+        def _decorator(*args, **kwargs):
+            robot, channel, user, message = args
+            if commands:
                 tokens = _extract_tokens(message)
                 try:
-                    message = func(robot, channel, tokens)
-                    robot.client.rtm_send_message(channel, message)
-                    return message
+                    channel, message = func(robot, channel, user, tokens)
+                    if channel:
+                        robot.client.rtm_send_message(channel, message)
+                        return message
+                    else:
+                        print "[Warn] Couldn't delivered a message"
                 except:
-                    print "[Error] Could't delivered a message for this reason"
+                    print "[Error] Couldn't delivered the message"
                     traceback.print_exc()
                     print
                     return None
