@@ -1,1 +1,1 @@
-robot: python robot.py
+robot: ./infinite.sh
