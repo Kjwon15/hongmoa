@@ -25,12 +25,11 @@ def run_code(tokens):
         },
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+        stderr=subprocess.STDOUT)
     if stdin:
         process.stdin.write(stdin.encode('utf-8'))
         process.stdin.close()
     process.wait()
     stdout = process.stdout.read()
-    stderr = process.stderr.read()
 
-    return stderr or stdout
+    return stdout
